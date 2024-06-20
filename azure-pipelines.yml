@@ -11,20 +11,24 @@ steps:
     versionSpec: '3.10.12'
     addToPath: true
 
+# Install system dependencies and pip
+- script: |
+    sudo apt-get update
+    sudo apt-get -y install cmake make gcc g++ libssl-dev python3-dev python3-pip
+    python3 -m pip install --upgrade pip
+    pip3 --version
+  displayName: 'Install system dependencies and pip'
+
 # Install pip, PyYAML, and other required libraries
 - script: |
-    python -m pip install --upgrade pip
-    sudo apt-get -y install python3-pip
-    pip3 --version
     pip install pyyaml packaging
   displayName: 'Install pip, PyYAML, and packaging'
 
-# Install the Azure collection and required Python packages
+# Install Ansible and the Azure collection dependencies
 - script: |
+    pip3 install ansible==8.7.0
     ansible-galaxy collection install azure.azcollection
-    pip install ansible[azure]
     pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
-    pip3 install -r requirements.txt
     ansible-galaxy collection install azure.azcollection --force
   displayName: 'Install Ansible Azure Collection and dependencies'
 
@@ -70,4 +74,3 @@ steps:
 
       ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
   displayName: 'Run Ansible Playbook'
-
