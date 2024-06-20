@@ -46,8 +46,8 @@ steps:
       RESOURCE_GROUP=$(jq -r '.rg_name' params.json)
       LOCATION=$(jq -r '.location' params.json)
 
-      echo "RESOURCE_GROUP: $RESOURCE_GROUP"
-      echo "LOCATION: $LOCATION"
+      echo "Your RESOURCE_GROUP: $RESOURCE_GROUP"
+      echo "Your LOCATION: $LOCATION"
 
       # Verify the Ansible version being used
       ansible --version
