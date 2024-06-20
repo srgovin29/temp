@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  #vmImage: 'ubuntu-latest'
   name: 'Mac-Ubuntu2204'
 
 steps:
@@ -31,9 +31,14 @@ steps:
 
 # Step to convert YAML to JSON
 - script: |
+    echo "Contents of parameters.yml:"
     cat $(Pipeline.Workspace)/drop/parameters.yml
-    python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); import json; print(json.dumps(params))" > params.json
-    cat params.json
+    
+    echo "Converting YAML to JSON..."
+    python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); import json; print(json.dumps(params))" > $(Pipeline.Workspace)/drop/params.json
+    
+    echo "Contents of params.json:"
+    cat $(Pipeline.Workspace)/drop/params.json
   displayName: 'Convert YAML to JSON'
 
 # Step to run the Ansible playbook
@@ -43,8 +48,11 @@ steps:
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      RESOURCE_GROUP=$(jq -r '.rg_name' params.json)
-      LOCATION=$(jq -r '.location' params.json)
+      echo "Contents of params.json:"
+      cat $(Pipeline.Workspace)/drop/params.json
+
+      RESOURCE_GROUP=$(jq -r '.rg_name' $(Pipeline.Workspace)/drop/params.json)
+      LOCATION=$(jq -r '.location' $(Pipeline.Workspace)/drop/params.json)
 
       echo "Your RESOURCE_GROUP: $RESOURCE_GROUP"
       echo "Your LOCATION: $LOCATION"
@@ -53,6 +61,6 @@ steps:
       ansible --version
 
       # Run the Ansible playbook with specified Python interpreter
-      #ansible-playbook -i localhost, main.yml
-      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
+      # ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
+      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" 
   displayName: 'Run Ansible Playbook'
