@@ -4,11 +4,10 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-# Reference the template for installing dependencies
-extends:
-  template: templates/install_dependencies.yml
-
 steps:
+# Reference the template for installing dependencies
+- template: templates/install_dependencies.yml
+
 # Step to create the artifact
 - task: CopyFiles@2
   inputs:
