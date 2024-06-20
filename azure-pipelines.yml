@@ -7,7 +7,8 @@ pool:
 
 steps:
 # Reference the template for installing dependencies
-- template: templates/install_dependencies.yml
+# Uncomment the template line if we are using the Microsoft agent. this is not required for Mac Ubuntu
+# - template: templates/install_dependencies.yml
 
 # Step to create the artifact
 - task: CopyFiles@2
