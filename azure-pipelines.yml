@@ -5,16 +5,26 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+# Use a specific version of Python
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '3.x'
     addToPath: true
 
+# Install pip, PyYAML, and other required libraries
 - script: |
     python -m pip install --upgrade pip
     pip install pyyaml packaging
   displayName: 'Install pip, PyYAML, and packaging'
 
+# Install the Azure collection
+- script: |
+    ansible-galaxy collection install azure.azcollection
+    pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+    ansible-galaxy collection install azure.azcollection --force
+  displayName: 'Install Ansible Azure Collection and dependencies'
+
+# Step to create the artifact
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Build.SourcesDirectory)'
@@ -27,18 +37,21 @@ steps:
     artifactName: 'drop'
     publishLocation: 'Container'
 
+# Step to download the artifact
 - task: DownloadPipelineArtifact@2
   inputs:
     artifactName: 'drop'
     targetPath: '$(Pipeline.Workspace)/drop'
   displayName: 'Download Pipeline Artifacts'
 
+# Step to convert YAML to JSON
 - script: |
     cat $(Pipeline.Workspace)/drop/parameters.yml
     python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); import json; print(json.dumps(params))" > params.json
     cat params.json
   displayName: 'Convert YAML to JSON'
 
+# Step to run the Ansible playbook
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'srgovin29_subscription(7e9464cb-6d69-4edc-8ee0-613d543b56d0)'
