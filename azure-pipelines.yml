@@ -64,6 +64,6 @@ steps:
       ansible --version
 
       # Run the Ansible playbook with specified Python interpreter
-      #ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP" -e "location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
-      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP" -e "location=$LOCATION"
+      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP" -e "location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
+      #ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP" -e "location=$LOCATION"
   displayName: 'Run Ansible Playbook'
