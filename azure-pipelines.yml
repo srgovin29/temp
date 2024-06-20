@@ -17,10 +17,10 @@ steps:
     pip install pyyaml packaging
   displayName: 'Install pip, PyYAML, and packaging'
 
-# Install the Azure collection
+# Install the Azure collection and required Python packages
 - script: |
     ansible-galaxy collection install azure.azcollection
-    pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+    pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
     ansible-galaxy collection install azure.azcollection --force
   displayName: 'Install Ansible Azure Collection and dependencies'
 
@@ -64,5 +64,5 @@ steps:
       echo "RESOURCE_GROUP: $RESOURCE_GROUP"
       echo "LOCATION: $LOCATION"
 
-      ansible-playbook -i localhost, main.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
   displayName: 'Run Ansible Playbook'
