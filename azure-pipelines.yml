@@ -66,6 +66,6 @@ steps:
       echo "RESOURCE_GROUP: $RESOURCE_GROUP"
       echo "LOCATION: $LOCATION"
 
-      ansible-playbook -i localhost, your-playbook.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
   displayName: 'Run Ansible Playbook'
 
