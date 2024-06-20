@@ -4,6 +4,7 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+# Reference the template for installing dependencies
 extends:
   template: templates/install_dependencies.yml
 
