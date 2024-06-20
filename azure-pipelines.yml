@@ -34,6 +34,11 @@ steps:
     ansible --version
   displayName: 'Install Ansible Azure Collection and dependencies'
 
+# Verify the installed Ansible version
+- script: |
+    ansible --version
+  displayName: 'Verify Ansible version'
+
 # Step to create the artifact
 - task: CopyFiles@2
   inputs:
@@ -74,5 +79,9 @@ steps:
       echo "RESOURCE_GROUP: $RESOURCE_GROUP"
       echo "LOCATION: $LOCATION"
 
+      # Verify the Ansible version being used
+      ansible --version
+
+      # Run the Ansible playbook
       ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
   displayName: 'Run Ansible Playbook'
