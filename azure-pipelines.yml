@@ -44,15 +44,15 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       RESOURCE_GROUP=$(jq -r '.rg_name' params.json)
-      LOCATION=$(jq -r '.location' params.json)
+      #LOCATION=$(jq -r '.location' params.json)
 
       echo "RESOURCE_GROUP: $RESOURCE_GROUP"
-      echo "LOCATION: $LOCATION"
+      #echo "LOCATION: $LOCATION"
 
       # Verify the Ansible version being used
       ansible --version
 
       # Run the Ansible playbook with specified Python interpreter
-      ansible-playbook -i localhost, main.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+      ansible-playbook -i localhost, main.yml -e "rg_name=$RESOURCE_GROUP"
       #ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
   displayName: 'Run Ansible Playbook'
