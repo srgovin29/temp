@@ -21,7 +21,7 @@ steps:
 
 # Install pip, PyYAML, and other required libraries
 - script: |
-    pip install pyyaml packaging
+    pip3 install pyyaml packaging
   displayName: 'Install pip, PyYAML, and packaging'
 
 # Install Ansible and the Azure collection dependencies
@@ -82,6 +82,6 @@ steps:
       # Verify the Ansible version being used
       ansible --version
 
-      # Run the Ansible playbook
-      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+      # Run the Ansible playbook with specified Python interpreter
+      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
   displayName: 'Run Ansible Playbook'

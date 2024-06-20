@@ -11,8 +11,6 @@
         location: "{{ location }}"
       register: rg_result
       until: rg_result is succeeded
-      retries: 5
-      delay: 10
 
     - name: Debug output
       debug:
