@@ -1,0 +1,42 @@
+# azure-pipelines.yml
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.x'
+    addToPath: true
+
+- script: |
+    python -m pip install --upgrade pip
+    pip install pyyaml
+  displayName: 'Install pip and PyYAML'
+
+- task: DownloadPipelineArtifact@2
+  inputs:
+    artifactName: 'drop'
+    targetPath: '$(Pipeline.Workspace)/drop'
+  displayName: 'Download Pipeline Artifacts'
+
+- script: |
+    python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); print(params)" > params.json
+  displayName: 'Convert YAML to JSON'
+
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: '7e9464cb-6d69-4edc-8ee0-613d543b56d0'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      RESOURCE_GROUP=$(jq -r '.rg_name' params.json)
+      LOCATION=$(jq -r '.location' params.json)
+
+      echo "RESOURCE_GROUP: $RESOURCE_GROUP"
+      echo "LOCATION: $LOCATION"
+
+      ansible-playbook -i localhost, your-playbook.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+  displayName: 'Run Ansible Playbook'
