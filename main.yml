@@ -7,8 +7,8 @@
   tasks:
     - name: Create resource group
       azure_rm_resourcegroup:
-        name: ansible_RG
-        location: 'SoutheastAsia'
+        name: "{{ rg_name }}"
+        location: "{{ location }}"
       register: rg_result
       until: rg_result is succeeded
 
