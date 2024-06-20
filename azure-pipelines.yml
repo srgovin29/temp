@@ -1,4 +1,3 @@
-# azure-pipelines.yml
 trigger:
 - main
 
@@ -6,6 +5,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+# Step to install Python and PyYAML
 - task: UsePythonVersion@0
   inputs:
     versionSpec: '3.x'
@@ -16,16 +16,32 @@ steps:
     pip install pyyaml
   displayName: 'Install pip and PyYAML'
 
+# Step to create the artifact
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'parameters.yml'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)'
+    artifactName: 'drop'
+    publishLocation: 'Container'
+
+# Step to download the artifact
 - task: DownloadPipelineArtifact@2
   inputs:
     artifactName: 'drop'
     targetPath: '$(Pipeline.Workspace)/drop'
   displayName: 'Download Pipeline Artifacts'
 
+# Step to convert YAML to JSON
 - script: |
     python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); print(params)" > params.json
   displayName: 'Convert YAML to JSON'
 
+# Step to run the Ansible playbook
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'srgovin29_subscription(7e9464cb-6d69-4edc-8ee0-613d543b56d0)'
@@ -38,5 +54,6 @@ steps:
       echo "RESOURCE_GROUP: $RESOURCE_GROUP"
       echo "LOCATION: $LOCATION"
 
-      ansible-playbook -i localhost, your-playbook.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
+      ansible-playbook -i localhost, main.yml -e "rg_name=$RESOURCE_GROUP location=$LOCATION"
   displayName: 'Run Ansible Playbook'
+
