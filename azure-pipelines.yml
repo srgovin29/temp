@@ -29,7 +29,9 @@ steps:
     pip3 install ansible==8.7.0
     ansible-galaxy collection install azure.azcollection
     pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
-    find . -regex '.*requirements.txt$'
+    # Find and install additional requirements.txt files
+    find . -regex '.*requirements.txt$' -exec pip3 install -r {} \;
     ansible-galaxy collection install azure.azcollection --force
+    # List the installed Ansible version
     ansible --version
   displayName: 'Install Ansible Azure Collection and dependencies'
