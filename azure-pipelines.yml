@@ -3,10 +3,11 @@ trigger:
 
 pool:
   vmImage: 'ubuntu-latest'
+  name: 'Mac-Ubuntu2204'
 
 steps:
 # Reference the template for installing dependencies
-- template: templates/install_dependencies.yml
+# - template: templates/install_dependencies.yml
 
 # Step to create the artifact
 - task: CopyFiles@2
