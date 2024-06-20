@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  #vmImage: 'ubuntu-latest'
+  vmImage: 'ubuntu-latest'
   name: 'Mac-Ubuntu2204'
 
 steps:
@@ -35,7 +35,7 @@ steps:
     cat $(Pipeline.Workspace)/drop/parameters.yml
     
     echo "Converting YAML to JSON..."
-    python -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); import json; print(json.dumps(params))" > $(Pipeline.Workspace)/drop/params.json
+    python3 -c "import yaml; f = open('$(Pipeline.Workspace)/drop/parameters.yml'); params = yaml.safe_load(f); f.close(); import json; print(json.dumps(params))" > $(Pipeline.Workspace)/drop/params.json
     
     echo "Contents of params.json:"
     cat $(Pipeline.Workspace)/drop/params.json
@@ -51,6 +51,9 @@ steps:
       echo "Contents of params.json:"
       cat $(Pipeline.Workspace)/drop/params.json
 
+      # Debug jq command output
+      jq '.' $(Pipeline.Workspace)/drop/params.json
+
       RESOURCE_GROUP=$(jq -r '.rg_name' $(Pipeline.Workspace)/drop/params.json)
       LOCATION=$(jq -r '.location' $(Pipeline.Workspace)/drop/params.json)
 
@@ -61,6 +64,7 @@ steps:
       ansible --version
 
       # Run the Ansible playbook with specified Python interpreter
-      # ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
-      ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" 
+      #ansible-playbook -i localhost, main.yml
+      #ansible-playbook -i localhost, main.yml -vvv -e "rg_name=$RESOURCE_GROUP location=$LOCATION" -e 'ansible_python_interpreter=/opt/hostedtoolcache/Python/3.10.12/x64/bin/python3'
+      ansible-playbook -i localhost, main.yml -vvv -e
   displayName: 'Run Ansible Playbook'
